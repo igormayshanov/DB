@@ -1,0 +1,16 @@
+INSERT INTO warehouse VALUES (@id_warehouse, "Центральный", "г.Йошкар-Ола", "88362-35-35-36");
+INSERT INTO warehouse VALUES (@id_warehouse, "Восточный", "г.Йошкар-Ола", "88362-35-35-37");
+INSERT INTO warehouse (name, address, phone) VALUES ("Западный", "пгт.Морки", "883638-9-15-37");
+INSERT INTO employee VALUES (@id_employee, "Иван", "Иванов", "директор", "г.Москва", 1);
+INSERT INTO employee VALUES (@id_employee, "Петр", "Петров", "директор", "г.Волжск", 2);
+INSERT INTO employee VALUES (@id_employee, "Сидор", "Сидоров", "директор", "пгт.Морки", 3);
+INSERT INTO producer VALUES (@id_producer, "ООО ""Заря""", "г.Йошкар-Ола", "88362-40-40-40");
+INSERT INTO producer VALUES (@id_producer, "ООО ""Рога и Копыта""", "г.Волжск", "88362-10-10-10");
+INSERT INTO producer VALUES (@id_producer, "ООО ""John Doe""", "г.Xt,jrcfhs", "88352-37-40-40");
+DELETE FROM producer WHERE name = "ООО ""John Doe""";
+INSERT INTO product VALUES (@id_product, "Хлеб", "2022.03.12", "700", 1);
+INSERT INTO product VALUES (@id_product, "Батон нарезной", "2022.03.12", "500", 2);
+INSERT INTO product VALUES (@id_product, "Колбаса докторская", "2022.03.12", "1000", 3);
+INSERT INTO warehouse_has_product VALUES ("2022.03.12", "2022.03.13", 1, 1);
+INSERT INTO warehouse_has_product VALUES ("2022.03.12", "2022.03.14", 2, 2);
+INSERT INTO warehouse_has_product VALUES ("2022.03.12", "2022.03.14", 2, 3);
