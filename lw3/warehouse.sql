@@ -88,11 +88,13 @@ ENGINE = InnoDB;
 -- Table `warehouse`.`warehouse_has_product`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `warehouse`.`warehouse_has_product` (
+  `id_warehouse_has_product` INT NOT NULL AUTO_INCREMENT, 
   `date_of_delivery` DATE NOT NULL,
   `shipment_date` DATE NOT NULL,
   `id_warehouse` INT NOT NULL,
   `id_product` INT NOT NULL,
-  PRIMARY KEY (`id_warehouse`, `id_product`),
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`id_warehouse_has_product`, `id_warehouse`, `id_product`),
   INDEX `fk_warehouse_has_product_product1_idx` (`id_product` ASC) VISIBLE,
   CONSTRAINT `fk_warehouse_has_product_warehouse`
     FOREIGN KEY (`id_warehouse`)
