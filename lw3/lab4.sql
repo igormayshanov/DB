@@ -292,3 +292,21 @@ SELECT * FROM employee;
 SELECT * FROM warehouse;
 
 -- b. Написать запрос SELECT atr1, atr2, (подзапрос) FROM ...
+SELECT
+	id_employee,
+    last_name,
+    (SELECT warehouse_name FROM warehouse w WHERE w.id_warehouse = e.id_warehouse)
+FROM employee e
+ORDER BY 2;
+
+SELECT * FROM employee;
+
+-- c. Написать запрос вида SELECT * FROM (подзапрос)
+SELECT *
+FROM (SELECT * FROM warehouse_has_product) AS whp;
+
+-- d. Написать запрос вида SELECT * FROM table JOIN (подзапрос) ON …
+SELECT *
+FROM warehouse_has_product whp
+JOIN (SELECT id_warehouse, warehouse_name FROM warehouse) AS warehouse_name
+	ON whp.id_warehouse = warehouse_name.id_warehouse;
