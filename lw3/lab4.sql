@@ -1,12 +1,16 @@
 USE warehouse;
 
--- Без указания списка полей
+-- 3.1 INSERT
+-- a. Без указания списка полей
+-- INSERT INTO table_name VALUES (value1, value2, value3, ...);
+
 INSERT INTO warehouse 
 VALUES 
 	(@id_warehouse, "Центральный", "г.Йошкар-Ола", "88362-35-35-36"),
 	(@id_warehouse, "Восточный", "г.Йошкар-Ола", "88362-35-35-37");
 
--- С указанием списка полей
+-- b. С указанием списка полей
+-- INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...);
 INSERT INTO warehouse (`warehouse_name`, address, phone)
 VALUES
 	("Западный", "пгт.Морки", "883638-9-15-37"),
@@ -57,7 +61,8 @@ VALUES
 
 SELECT * FROM warehouse_has_product;
 
--- С чтением значения из другой таблицы
+-- c. С чтением значения из другой таблицы
+-- INSERT INTO table2 (column_name(s)) SELECT column_name(s) FROM table1;
 INSERT INTO 
 	warehouse (address, `warehouse_name`) 
 SELECT 
@@ -67,24 +72,31 @@ FROM producer;
 
 SELECT * FROM warehouse;
 
--- 3.2 Удаление всех записей из таблицы
+-- 3.2. DELETE
+-- a. Всех записей
 SET SQL_SAFE_UPDATES=0;
 DELETE FROM employee;
 
 SELECT * FROM employee;
 
--- 3.2 Удаление записей по условию
+-- b. По условию DELETE FROM table_name WHERE condition;
 DELETE FROM employee 
 WHERE position = "грузчик";
 
--- 3.3 Изменение занечений всех записей 
+-- 3.3. UPDATE
+-- a. Всех записей
 UPDATE employee 
 SET first_name = "Евгений";
--- 3.3 По условию обновляем один атрибут
+
+-- b. По условию обновляя один атрибут
+-- UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition;
+
 UPDATE employee 
 SET first_name = "Василий" 
 WHERE id_employee = 11; 
--- 3.3 По условию обновляем несколько атрибутов
+
+-- c. По условию обновляя несколько атрибутов
+-- UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition;
 UPDATE 
 	employee 
 SET 
@@ -92,11 +104,14 @@ SET
     last_name = "Иванов" 
 WHERE first_name = "Евгений"; 
 
--- 3.4 SELECT с набором извлекаемых элементов
+-- 3.4. SELECT
+-- a. С набором извлекаемых атрибутов (SELECT atr1, atr2 FROM...)
 SELECT `product_name`, weight FROM product;
--- 3.4 SELECT со всеми атрибутами
+
+-- b. Со всеми атрибутами (SELECT * FROM...)
 SELECT * FROM product;
--- 3.4 SELECT с условием по атрибуту
+
+-- c. С условием по атрибуту (SELECT * FROM ... WHERE atr1 = value)
 SELECT * 
 FROM employee 
 WHERE position = "директор";
