@@ -23,6 +23,14 @@ VALUES
 	(@id_employee, "Сидор", "Сидоров", "директор", "пгт.Морки", 3),
 	(@id_employee, "Вася", "Васильев", "грузчик", "г.Волжск", 4);
 
+INSERT INTO employee 
+VALUES 
+	(@id_employee, "Влентина", "Терешкова", "кладовщик", "г.Москва", 1),
+	(@id_employee, "Юрий", "Гагарин", "зам.директора", "г.Москва", 1),
+	(@id_employee, "Алексей", "Титов", "водитель", "г.Москва", 1),
+	(@id_employee, "Андриян", "Николаев", "приемщик", "г.Москва", 1);
+	
+
 INSERT INTO producer 
 VALUES 
 	(@id_producer, "ООО ""Заря""", "г.Йошкар-Ола", "88362-40-40-40"),
@@ -58,6 +66,18 @@ VALUES
 	(@id_warehouse_has_product, "2022.03.15", "2022.03.16", 1, 12, 10),
 	(@id_warehouse_has_product, "2022.03.15", "2022.03.17", 2, 1, 10),
 	(@id_warehouse_has_product, "2022.03.14", "2022.03.15", 3, 17, 10);
+
+INSERT INTO warehouse_has_product
+VALUES 
+	(@id_warehouse_has_product, "2022.03.12", "2022.03.13", 1, 1, 10),
+	(@id_warehouse_has_product, "2022.03.12", "2022.03.14", 2, 1, 2),
+	(@id_warehouse_has_product, "2022.03.12", "2022.03.14", 2, 1, 3),
+	(@id_warehouse_has_product, "2022.03.13", "2022.03.14", 3, 1, 3),
+	(@id_warehouse_has_product, "2022.03.14", "2022.03.15", 4, 1, 4),
+	(@id_warehouse_has_product, "2022.03.15", "2022.03.16", 2, 13, 5),
+	(@id_warehouse_has_product, "2022.03.15", "2022.03.16", 1, 13, 6),
+	(@id_warehouse_has_product, "2022.03.15", "2022.03.16", 4, 13, 7);
+
 
 SELECT * FROM warehouse_has_product;
 
@@ -169,7 +189,7 @@ FROM product;
  
  -- 3.7. Функции агрегации
  -- a. Посчитать количество записей в таблице
- SELECT COUNT(*) 
+SELECT COUNT(*) 
 FROM employee;
  
 -- b. Посчитать количество уникальных записей в таблице
@@ -207,6 +227,26 @@ GROUP BY first_name;
 -- которую можно использовать.
 SELECT * FROM warehouse_has_product;
 SELECT * FROM product;
+
+-- найти продукты, которые завезены на склад более 3 раз
+SELECT 
+	id_product, 
+    COUNT(date_of_delivery) AS delivery_quantity 
+FROM 
+	warehouse_has_product
+		GROUP BY id_product 
+        HAVING delivery_quantity > 3;
+
+
+-- найти склады, где работает более 4 работников
+SELECT 
+	id_warehouse, 
+    COUNT(id_warehouse) AS quantity 
+FROM 
+	employee 
+		GROUP BY id_warehouse 
+        HAVING quantity > 4;
+
 -- извлечь дату последней поставки на склад батона нарезного id_product = 13 
 SELECT 
 	id_product, 
@@ -238,10 +278,9 @@ FROM
 -- 3.9. SELECT JOIN
 -- a. LEFT JOIN двух таблиц и WHERE по одному из атрибутов
 SELECT *
-FROM 
-	producer
-		LEFT JOIN product
-			ON producer.id_producer = product.id_producer
+FROM producer
+LEFT JOIN product
+	ON producer.id_producer = product.id_producer
 WHERE producer.producer_name = "ООО ""Рога и копыта""";
 
 ALTER TABLE `producer` CHANGE COLUMN `name` `producer_name` VARCHAR(45) NOT NULL;
@@ -269,7 +308,10 @@ FROM
 			ON p.id_product = whp.id_product
         LEFT JOIN producer pr
 			ON p.id_producer = pr.id_producer
-WHERE w.warehouse_name = "Центральный" AND p.product_name = "Хлеб" AND whp.date_of_delivery = "2022-03-12";
+WHERE 
+	w.warehouse_name = "Центральный" 
+    AND p.product_name = "Хлеб" 
+    AND whp.date_of_delivery = "2022-03-12";
 
 -- d. INNER JOIN двух таблиц
 SELECT DISTINCT 
@@ -291,8 +333,7 @@ SELECT
     last_name,
     first_name,
     id_warehouse
-FROM
-	employee
+FROM employee
 WHERE id_warehouse IN (
 	SELECT
 		id_warehouse
