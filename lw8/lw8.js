@@ -74,14 +74,13 @@ db.join_project.insertMany([
 
 db.join_project.drop()
 
-/*3.3 Удаление записей
-• Удаление одной записи по условию deleteOne
-• Удаление нескольких записей по условию deleteMany*/
+//3.3 Удаление записей
+//• Удаление одной записи по условию deleteOne
 
 db.department.deleteOne({name: "Отдел аренды"})
 db.employee.deleteOne({position: "Инженигер"})
+//• Удаление нескольких записей по условию deleteMany*/
 db.employee.deleteMany({position: "Инженигер"})
-
 
 /*3.4 Поиск записей
 • Поиск по ID
@@ -110,19 +109,62 @@ db.project.find({$and:[
     {name:{$ne: "Открытия"}},
 ]}) 
 
+db.join_project.find(
+    {
+        id_employee: {
+            $elemMatch: {
+                ObjectId("629e3774c088b8c40352f2d5")
+            }
+        }
+    })
 
+    db.join_project.find({
+        id_employee: {$size: 2}
+    })
 
-db.users.update(
-    {fullname: "Gena"},
+    db.project.find({end_date:{$exists: false}})
+
+/*
+3.5 Обновление записей
+• Изменить значение атрибута у записи
+• Удалить атрибут у записи
+• Добавить атрибут записи*/
+
+db.employee.updateOne(
+    {
+        name: 'Сталин Иосиф',
+    },
     {
         $set: {
-            posts: [
-                {title: "JavaScript", text: "js top"},
-                {title: "mongo", text: "mongo database"},
-            ]
+            "position": "Операционный директор округа ММ"
         }
     }
 )
+
+db.project.updateMany(
+    {
+        end_date: ''
+    },
+    {
+        $unset: {
+            end_date: 1
+        }
+    },
+    false,
+    true
+);
+
+db.project.updateMany(
+    {
+        "end_date": {$exists: false}
+    },
+    {
+        $set: {
+            "end_date": ""
+        }
+    }
+);
+
 
 /*
 { _id: ObjectId("629e2c56c088b8c40352f2cc"),
