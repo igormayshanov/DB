@@ -42,7 +42,7 @@ ALTER TABLE [university].[dbo].[lesson]
 SELECT * FROM [dbo].[group];
 
 SELECT * FROM [dbo].[student]
-WHERE id_group = 2 OR id_group = 4;
+WHERE id_group = 3;
 
 SELECT * FROM [dbo].[subject];
 
@@ -50,7 +50,7 @@ SELECT * FROM [dbo].[mark]
 ORDER BY id_student;
 
 SELECT * FROM [dbo].[lesson]
-WHERE id_subject = 2
+WHERE id_group = 3
 ORDER BY id_lesson;
 
 SELECT * FROM [dbo].[lesson] l
@@ -165,6 +165,13 @@ WHERE l.id_subject IN (SELECT ss.id_subject FROM (SELECT l.id_subject, sig.stude
 						HAVING SUM(ss.student_cnt) >= 35)
 GROUP BY l.id_subject, s.name;
 
+SELECT s.name AS subject_name, ROUND(AVG(CAST(m.mark AS FLOAT)), 2) AS avg_mark FROM [dbo].[lesson] l
+LEFT JOIN [dbo].[mark] m ON m.id_lesson = l.id_lesson
+LEFT JOIN [dbo].[student] st ON l.id_group = st.id_group
+LEFT JOIN [dbo].[subject] s ON l.id_subject = s.id_subject
+GROUP BY s.name
+HAVING COUNT(DISTINCT st.id_student) >= 35;
+
 --5. Дать оценки студентов специальности ВМ по всем проводимым предметам с
 --указанием группы, фамилии, предмета, даты. При отсутствии оценки заполнить
 --значениями NULL поля оценки.
@@ -176,7 +183,6 @@ JOIN [dbo].[subject] s ON s.id_subject = l.id_subject
 WHERE g.name = 'ВМ'
 GROUP BY s.name, g.name;
 
-
 SELECT g.name AS group_name, st.name AS FIO, s.name AS [subject], l.date, m.mark FROM [dbo].[student] st
 LEFT JOIN [dbo].[mark] m ON m.id_student = st.id_student
 LEFT JOIN [dbo].[lesson] l ON l.id_lesson = m.id_lesson
@@ -186,6 +192,19 @@ WHERE st.id_group IN (SELECT g.id_group FROM [dbo].[group] g
 						WHERE g.name = 'ВМ'
 						GROUP BY g.id_group)
 ORDER BY st.name, m.id_lesson;
+
+SELECT *  FROM [dbo].[group] g
+JOIN [dbo].[student] st ON st.id_group = g.id_group
+JOIN [dbo].[lesson] l ON l.id_group = g.id_group
+LEFT JOIN [dbo].[mark] m ON m.id_student = st.id_student AND m.id_lesson = l.id_lesson
+WHERE g.name = 'ВМ';
+
+SELECT g.name AS group_name, st.name AS student, s.name AS subject_name, l.date, m.mark  FROM [dbo].[group] g
+JOIN [dbo].[student] st ON st.id_group = g.id_group
+JOIN [dbo].[lesson] l ON l.id_group = g.id_group
+LEFT JOIN [dbo].[mark] m ON m.id_student = st.id_student AND m.id_lesson = l.id_lesson
+JOIN [dbo].[subject] s ON s.id_subject = l.id_subject
+WHERE g.name = 'ВМ';
 
 --6. Всем студентам специальности ПС, получившим оценки меньшие 5 по предмету
 --БД до 12.05, повысить эти оценки на 1 балл.
@@ -206,7 +225,8 @@ WHERE l.date < '2019.05.12'
 						GROUP BY g.id_group)
 )
 
---7. Добавить необходимые индексы.
+--7. Добавить необходимые индексы.
+
 CREATE NONCLUSTERED INDEX [IX_lesson_id_subject] ON [dbo].[lesson]
 (
 	[id_subject] ASC
